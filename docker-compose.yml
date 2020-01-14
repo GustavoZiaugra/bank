@@ -1,0 +1,28 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - "./volumes/postgres:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+    container_name: postgres
+  web:
+    build: .
+    restart: always
+    volumes:
+      - .:/bank
+    ports:
+      - "4000:4000"
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    environment:
+      - MIX_ENV=dev
+      - PORT=4000
+      - DATABASE_URL=ecto://postgres:postgres@postgres/bank_dev
+      - PGUSER=postgres
+      - PGDATABASE=bank_dev
+      - PGPORT=5432
+      - PGHOST=postgres
