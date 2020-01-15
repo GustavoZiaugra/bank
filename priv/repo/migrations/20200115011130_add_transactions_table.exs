@@ -5,8 +5,8 @@ defmodule Bank.Repo.Migrations.AddTransactionsTable do
     create table(:transactions, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :operation_type, :string, null: false
-      add :payer_id, :string, size: 50
-      add :receiver_id, :string, size: 50, null: true
+      add(:payer_id, references("accounts", type: :binary_id), null: false)
+      add(:receiver_id, references("accounts", type: :binary_id), null: true)
       add :amount, :float, null: false
 
       timestamps()
