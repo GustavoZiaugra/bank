@@ -67,6 +67,8 @@ defmodule Bank.Accounts.Account do
   #   end
   # end
 
+  defp validate_valid_balance(%Ecto.Changeset{valid?: false} = changeset), do: changeset
+
   defp validate_valid_balance(%Ecto.Changeset{changes: %{balance: balance}} = changeset) do
     if balance < 0 do
       changeset
@@ -74,5 +76,24 @@ defmodule Bank.Accounts.Account do
     else
       changeset
     end
+  end
+
+  def verify_balance(account, amount) do
+    if account.balance - amount < 0 do
+      :not_authorized
+    else
+      :authorized
+    end
+  end
+
+  def calculate_balance(:withdraw, account, _receiver, amount) do
+    payer_balance = account.balance - amount
+    {:ok, payer_balance: payer_balance, receiver_balance: nil}
+  end
+
+  def calculate_balance(:transfer, payer, receiver, amount) do
+    payer_balance = payer.balance - amount
+    receiver_balance = receiver.balance + amount
+    {:ok, payer_balance: payer_balance, receiver_balance: receiver_balance}
   end
 end

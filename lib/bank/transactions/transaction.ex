@@ -2,6 +2,7 @@ defmodule Bank.Transactions.Transaction do
   use Ecto.Schema
   import Ecto.Changeset
   alias Bank.Accounts.Accounts
+  alias Bank.Accounts.Account
   alias Bank.Transactions.Transaction
 
   @operation_types [
@@ -34,22 +35,46 @@ defmodule Bank.Transactions.Transaction do
     ])
     |> validate_required([
       :operation_type,
-      :amount,
-      :payer_id
+      :amount
     ])
     |> validate_inclusion(:operation_type, @operation_types)
-    |> validate_valid_balance()
+    |> validate_valid_amount()
     |> validate_and_put_payer()
     |> validate_and_put_receiver()
+    |> validate_account_by_transaction()
     |> unique_constraint(:id)
   end
 
-  defp validate_valid_balance(%Ecto.Changeset{changes: %{amount: amount}} = changeset) do
+  defp validate_valid_amount(%Ecto.Changeset{changes: %{amount: amount}} = changeset) do
     if amount < 0 do
       changeset
       |> add_error(:balance, "amount cannot be negative")
     else
       changeset
+    end
+  end
+
+  defp validate_account_by_transaction(%Ecto.Changeset{valid?: false} = changeset), do: changeset
+
+  defp validate_account_by_transaction(
+         %Ecto.Changeset{changes: %{payer_id: payer_id, receiver_id: receiver_id, amount: amount}} =
+           changeset
+       ) do
+    payer = Accounts.filter_by_uuid(payer_id)
+    receiver = Accounts.filter_by_uuid(receiver_id)
+
+    if payer == receiver do
+      changeset
+      |> add_error(:payer_id, "payer is equal receiver_id")
+    else
+      case Account.verify_balance(payer, amount) do
+        :not_authorized ->
+          changeset
+          |> add_error(:amount, "this operation cannot be authorized")
+
+        :authorized ->
+          changeset
+      end
     end
   end
 
