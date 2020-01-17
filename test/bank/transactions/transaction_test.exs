@@ -5,6 +5,7 @@ defmodule Bank.Transactions.TransactionsTest do
   alias Bank.Transactions.Transactions
   alias Bank.Accounts.Accounts
   alias Bank.Fixtures
+  alias Bank.Job
 
   describe "transactions" do
     defp valid_attrs(:transfer) do
@@ -51,6 +52,8 @@ defmodule Bank.Transactions.TransactionsTest do
       {:ok, %Transaction{} = transaction} =
         Transactions.create_and_update_account_balance(valid_attrs(:withdraw))
 
+      assert Job.enqueued() |> Enum.empty?() == false
+
       assert transaction.amount == 100.0
       assert transaction.operation_type == "withdraw"
       assert transaction.payer_id == valid_attrs(:withdraw).payer_id
@@ -70,6 +73,8 @@ defmodule Bank.Transactions.TransactionsTest do
       {:ok, %Transaction{} = transaction} =
         Transactions.create_and_update_account_balance(valid_attrs(:transfer))
 
+      assert Job.enqueued() == []
+
       assert transaction.amount == 100.0
       assert transaction.operation_type == "transfer"
       assert transaction.payer_id == valid_attrs(:transfer).payer_id
@@ -86,6 +91,8 @@ defmodule Bank.Transactions.TransactionsTest do
       {:error, {_action, changeset, _changes_so_far}} =
         Transactions.create_and_update_account_balance(invalid_attrs())
 
+      assert Job.enqueued() == []
+
       assert changeset.valid? == false
       assert changeset.errors |> Enum.empty?() == false
     end
@@ -93,6 +100,8 @@ defmodule Bank.Transactions.TransactionsTest do
     test "create_and_update_account_balance/1 with invalid data (equal receiver and payer) returns a invalid transaction" do
       {:error, {_action, changeset, _changes_so_far}} =
         Transactions.create_and_update_account_balance(equal_payer_and_receiver_attrs())
+
+      assert Job.enqueued() == []
 
       assert changeset.valid? == false
       assert changeset.errors |> Enum.empty?() == false

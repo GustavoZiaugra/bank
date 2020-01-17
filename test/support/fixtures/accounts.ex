@@ -4,7 +4,6 @@ defmodule Bank.Fixtures.Accounts do
   """
 
   alias Bank.Repo
-  alias Bank.Fixtures
   alias Bank.Accounts.Account
   alias Comeonin.Bcrypt
   import Ecto.Query, only: [from: 2]

@@ -1,6 +1,7 @@
 defmodule Bank.Transactions.Transactions do
   alias Bank.Repo
   alias Bank.Transactions.Transaction
+  alias Bank.Jobs.Transactions.Withdraw.MailerJob
   alias Bank.Accounts.Account
   alias Bank.Accounts.Accounts
   alias Ecto.Multi
@@ -61,15 +62,27 @@ defmodule Bank.Transactions.Transactions do
     end)
   end
 
+  def run_notify_by_mail(multi) do
+    multi
+    |> Multi.run(:notify_by_mail, fn _repo, %{account_balance_update: transaction} ->
+      if transaction.operation_type == "withdraw" do
+        Rihanna.enqueue({MailerJob, :perform, [transaction]})
+      end
+
+      {:ok, transaction}
+    end)
+  end
+
   def create_and_update_account_balance(%{} = transaction_params) do
     transaction_result =
       Multi.new()
       |> run_create(transaction_params)
       |> run_account_balance_update()
+      |> run_notify_by_mail()
       |> Repo.transaction(timeout: 600_000)
 
     case transaction_result do
-      {:ok, %{account_balance_update: transaction}} ->
+      {:ok, %{notify_by_mail: transaction}} ->
         {:ok, transaction}
 
       {:error, failed_operation, failed_value, changes_so_far} ->
