@@ -17,7 +17,7 @@ defmodule Bank.Fixtures.Accounts do
         name: "Joe Armistrong",
         email: "joe@armistrong.com.br",
         encrypted_password: Bcrypt.hashpwsalt("1234567"),
-        balance: 1000.0
+        balance: 1000 * 100
       }
       |> Map.merge(attrs)
 
@@ -31,7 +31,7 @@ defmodule Bank.Fixtures.Accounts do
         name: "Maria Vladas",
         email: "maria@valdirme.com.br",
         encrypted_password: Bcrypt.hashpwsalt("1234567"),
-        balance: 1000.0
+        balance: 1000 * 100
       }
       |> Map.merge(attrs)
 

@@ -17,7 +17,7 @@ defmodule Bank.Transactions.Transaction do
 
   schema "transactions" do
     field(:operation_type, :string)
-    field(:amount, :float)
+    field(:amount, :integer)
 
     timestamps(created_at: :created_at, updated_at: :updated_at)
 

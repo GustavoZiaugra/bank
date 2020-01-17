@@ -15,7 +15,7 @@ defmodule Bank.Accounts.Account do
     field(:email, :string)
     field(:password, :string, virtual: true)
     field(:encrypted_password, :string)
-    field(:balance, :float)
+    field(:balance, :integer)
 
     timestamps(created_at: :created_at, updated_at: :updated_at)
 
@@ -53,7 +53,7 @@ defmodule Bank.Accounts.Account do
   end
 
   defp put_default_balance(changeset) do
-    put_change(changeset, :balance, 1000.0)
+    put_change(changeset, :balance, 1000 * 100)
   end
 
   defp put_encrypted_password(%Ecto.Changeset{valid?: false} = changeset), do: changeset

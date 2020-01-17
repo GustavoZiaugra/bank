@@ -25,7 +25,7 @@ defmodule Bank.Accounts do
   Updates an account.
 
   Only update propertie:
-    - balance ( float: min 0)
+    - balance (integer(amount in cents): min 0)
   """
 
   def update(%Account{} = account \\ %Account{}, attrs \\ %{}) do

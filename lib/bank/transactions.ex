@@ -11,7 +11,7 @@ defmodule Bank.Transactions do
 
   Mandatory transactions properties:
     - operation_type (string: [ withdraw or transfer ]
-    - amount (float: min 0)
+    - amount (integer(amount in cents): min 0)
     - payer_id ( UUID )
     - receiver_id ( UUID )
   """
