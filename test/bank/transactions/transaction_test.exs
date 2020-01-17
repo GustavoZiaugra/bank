@@ -1,9 +1,9 @@
 defmodule Bank.Transactions.TransactionsTest do
   use Bank.DataCase
 
+  alias Bank.Transactions
   alias Bank.Transactions.Transaction
-  alias Bank.Transactions.Transactions
-  alias Bank.Accounts.Accounts
+  alias Bank.Accounts
   alias Bank.Fixtures
   alias Bank.Job
 

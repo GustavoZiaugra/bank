@@ -1,8 +1,8 @@
 defmodule Bank.Accounts.AccountsTest do
   use Bank.DataCase
 
+  alias Bank.Accounts
   alias Bank.Accounts.Account
-  alias Bank.Accounts.Accounts
   alias Bank.Fixtures
   alias Comeonin.Bcrypt
 

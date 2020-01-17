@@ -1,9 +1,9 @@
-defmodule Bank.Transactions.Transactions do
+defmodule Bank.Transactions do
   alias Bank.Repo
   alias Bank.Transactions.Transaction
   alias Bank.Jobs.Transactions.Withdraw.MailerJob
   alias Bank.Accounts.Account
-  alias Bank.Accounts.Accounts
+  alias Bank.Accounts
   alias Ecto.Multi
 
   @doc """
@@ -19,16 +19,9 @@ defmodule Bank.Transactions.Transactions do
   def run_create(multi, %{} = transaction_params) do
     multi
     |> Multi.run(:create_transaction, fn _repo, _changes ->
-      changeset =
-        %Transaction{}
-        |> Transaction.changeset(transaction_params)
-
-      if changeset.valid? do
-        {:ok, transaction} = Repo.insert(changeset)
-        {:ok, transaction}
-      else
-        {:error, changeset}
-      end
+      %Transaction{}
+      |> Transaction.changeset(transaction_params)
+      |> Repo.insert()
     end)
   end
 
@@ -39,7 +32,7 @@ defmodule Bank.Transactions.Transactions do
       receiver = Accounts.filter_by_uuid(transaction.receiver_id)
 
       {:ok, payer_balance: payer_balance, receiver_balance: receiver_balance} =
-        Account.calculate_balance(
+        Accounts.calculate_balance(
           String.to_atom(transaction.operation_type),
           payer,
           receiver,

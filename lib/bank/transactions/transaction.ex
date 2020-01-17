@@ -1,8 +1,7 @@
 defmodule Bank.Transactions.Transaction do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Bank.Accounts.Accounts
-  alias Bank.Accounts.Account
+  alias Bank.Accounts
   alias Bank.Transactions.Transaction
 
   @operation_types [
@@ -19,6 +18,7 @@ defmodule Bank.Transactions.Transaction do
   schema "transactions" do
     field(:operation_type, :string)
     field(:amount, :float)
+
     timestamps(created_at: :created_at, updated_at: :updated_at)
 
     belongs_to(:receiver, Bank.Accounts.Account, foreign_key: :receiver_id, type: :binary_id)
@@ -67,7 +67,7 @@ defmodule Bank.Transactions.Transaction do
       changeset
       |> add_error(:payer_id, "payer is equal receiver_id")
     else
-      case Account.verify_balance(payer, amount) do
+      case Accounts.verify_balance(payer, amount) do
         :not_authorized ->
           changeset
           |> add_error(:amount, "this operation cannot be authorized")
