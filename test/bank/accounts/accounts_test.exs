@@ -18,13 +18,12 @@ defmodule Bank.Accounts.AccountsTest do
     @valid_attrs %{
       name: "Gustavo Ziaugra",
       email: "gustavo.ziaugra@live.com",
-      encrypted_password: "1234567",
-      balance: 1000.0
+      password: "1234567"
     }
     @update_attrs %{
       name: "Maria Vladas 23",
       email: "vladinhas@uol.com.br",
-      encrypted_password: "09876543",
+      password: "09876543",
       balance: 750.0
     }
 

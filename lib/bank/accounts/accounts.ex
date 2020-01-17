@@ -13,7 +13,6 @@ defmodule Bank.Accounts.Accounts do
     - name ( string: up to 255 chars)
     - email ( string: up to 255 chars)
     - password ( password: min 6 chars and max to 100 chars)
-    - balance ( float: min 0)
   """
 
   def create(%{} = account_params) do

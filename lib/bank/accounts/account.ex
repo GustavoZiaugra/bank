@@ -13,6 +13,7 @@ defmodule Bank.Accounts.Account do
   schema "accounts" do
     field(:name, :string)
     field(:email, :string)
+    field(:password, :string, virtual: true)
     field(:encrypted_password, :string)
     field(:balance, :float)
     timestamps(created_at: :created_at, updated_at: :updated_at)
@@ -26,18 +27,17 @@ defmodule Bank.Accounts.Account do
     |> cast(attrs, [
       :name,
       :email,
-      :encrypted_password,
-      :balance
+      :password
     ])
     |> validate_required([
       :name,
       :email,
-      :encrypted_password,
-      :balance
+      :password
     ])
     |> validate_length(:name, max: 255)
     |> validate_length(:email, max: 255)
     |> validate_length(:encrypted_password, min: 6, max: 100)
+    |> put_default_balance
     |> put_encrypted_password
     |> validate_valid_balance()
     |> unique_constraint(:id)
@@ -51,11 +51,13 @@ defmodule Bank.Accounts.Account do
     |> validate_valid_balance()
   end
 
+  defp put_default_balance(changeset) do
+    put_change(changeset, :balance, 1000.0)
+  end
+
   defp put_encrypted_password(%Ecto.Changeset{valid?: false} = changeset), do: changeset
 
-  defp put_encrypted_password(
-         %Ecto.Changeset{changes: %{encrypted_password: password}} = changeset
-       ) do
+  defp put_encrypted_password(%Ecto.Changeset{changes: %{password: password}} = changeset) do
     put_change(changeset, :encrypted_password, Bcrypt.hashpwsalt(password))
   end
 
