@@ -94,7 +94,10 @@ defmodule Bank.Transactions.Transaction do
 
   def validate_and_put_receiver(%Ecto.Changeset{valid?: false} = changeset), do: changeset
 
-  def validate_and_put_receiver(%Ecto.Changeset{changes: %{receiver_id: receiver_id}} = changeset) do
+  def validate_and_put_receiver(
+        %Ecto.Changeset{changes: %{receiver_id: receiver_id, operation_type: "transfer"}} =
+          changeset
+      ) do
     receiver = Accounts.filter_by_uuid(receiver_id)
 
     if Kernel.is_nil(receiver) do
@@ -105,4 +108,6 @@ defmodule Bank.Transactions.Transaction do
       |> put_assoc(:receiver, receiver)
     end
   end
+
+  def validate_and_put_receiver(changeset), do: changeset
 end

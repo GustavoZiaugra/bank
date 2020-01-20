@@ -1,10 +1,12 @@
 defmodule Bank.Transactions do
+  import Ecto.Query, only: [from: 2]
   alias Bank.Repo
   alias Bank.Transactions.Transaction
   alias Bank.Jobs.Transactions.Withdraw.MailerJob
   alias Bank.Accounts.Account
   alias Bank.Accounts
   alias Ecto.Multi
+  use Timex
 
   @doc """
   Creates an transaction.
@@ -81,5 +83,50 @@ defmodule Bank.Transactions do
       {:error, failed_operation, failed_value, changes_so_far} ->
         {:error, {failed_operation, failed_value, changes_so_far}}
     end
+  end
+
+  @doc """
+  Returns transactions by intervals:
+    - per_day (current_day)
+    - per_month (current_month)
+    - per_year (current_year)
+    - all (all transactions)
+  """
+
+  def filter_by_day do
+    date =
+      DateTime.utc_now()
+      |> Timex.beginning_of_day()
+
+    query = from t in Transaction, where: t.inserted_at >= ^date
+
+    query
+    |> Repo.all()
+  end
+
+  def filter_by_month do
+    date =
+      DateTime.utc_now()
+      |> Timex.beginning_of_month()
+
+    query = from t in Transaction, where: t.inserted_at >= ^date
+
+    query
+    |> Repo.all()
+  end
+
+  def filter_by_year do
+    date =
+      DateTime.utc_now()
+      |> Timex.beginning_of_year()
+
+    query = from t in Transaction, where: t.inserted_at >= ^date
+
+    query
+    |> Repo.all()
+  end
+
+  def all do
+    Repo.all(Transaction)
   end
 end
