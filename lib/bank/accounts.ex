@@ -68,4 +68,14 @@ defmodule Bank.Accounts do
     receiver_balance = receiver.balance + amount
     {:ok, payer_balance: payer_balance, receiver_balance: receiver_balance}
   end
+
+  def format_to_currency(account) do
+    balance =
+      account.balance
+      |> Money.new(:BRL)
+      |> Money.to_string()
+
+    account = Map.put(account, :balance, balance)
+    {:ok, account}
+  end
 end

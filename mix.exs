@@ -39,12 +39,13 @@ defmodule Bank.MixProject do
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
+      {:jason, "~> 1.1"},
       {:plug_cowboy, "~> 2.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:rihanna, "~> 1.3"},
-      {:timex, "~> 3.5"}
+      {:timex, "~> 3.5"},
+      {:money, "~> 1.4"}
     ]
   end
 
