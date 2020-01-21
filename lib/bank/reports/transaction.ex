@@ -1,5 +1,4 @@
 defmodule Bank.Reports.Transactions do
-  alias Bank.Repo
   alias Bank.Transactions
 
   @doc """

@@ -1,5 +1,5 @@
 defmodule Bank.Transactions.TransactionsTest do
-  use Bank.DataCase
+  use Bank.DataCase, async: true
 
   alias Bank.Transactions
   alias Bank.Transactions.Transaction
