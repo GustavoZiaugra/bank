@@ -17,7 +17,7 @@ defmodule Bank.Reports.TransactionTest do
 
     test "by_day" do
       {:ok, result} = Transactions.get_report(:by_day)
-      assert result |> Map.get(:amount) == nil
+      assert result |> Map.get(:amount) == 20000
       assert result |> Map.get(:transactions) |> Enum.count() == 2
     end
 
@@ -30,7 +30,7 @@ defmodule Bank.Reports.TransactionTest do
 
       {:ok, result} = Transactions.get_report(:by_month)
 
-      assert result |> Map.get(:amount) == nil
+      assert result |> Map.get(:amount) == 10000
       assert result |> Map.get(:transactions) |> Enum.count() == 1
     end
 
@@ -42,7 +42,7 @@ defmodule Bank.Reports.TransactionTest do
       |> Repo.update!()
 
       {:ok, result} = Transactions.get_report(:by_year)
-      assert result |> Map.get(:amount) == nil
+      assert result |> Map.get(:amount) == 10000
       assert result |> Map.get(:transactions) |> Enum.count() == 1
     end
 
@@ -54,7 +54,7 @@ defmodule Bank.Reports.TransactionTest do
       |> Repo.update!()
 
       {:ok, result} = Transactions.get_report(:total)
-      assert result |> Map.get(:amount) == nil
+      assert result |> Map.get(:amount) == 20000
       assert result |> Map.get(:transactions) |> Enum.count() == 2
     end
   end

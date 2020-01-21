@@ -13,29 +13,50 @@ defmodule Bank.Reports.Transactions do
 
   def get_report(:by_day) do
     transactions = Transactions.filter_by_day()
-    amount = nil
+
+    amount =
+      transactions
+      |> calculate_total_amount
 
     {:ok, %{transactions: transactions, amount: amount}}
   end
 
   def get_report(:by_month) do
     transactions = Transactions.filter_by_month()
-    amount = nil
+
+    amount =
+      transactions
+      |> calculate_total_amount
 
     {:ok, %{transactions: transactions, amount: amount}}
   end
 
   def get_report(:by_year) do
     transactions = Transactions.filter_by_year()
-    amount = nil
+
+    amount =
+      transactions
+      |> calculate_total_amount
 
     {:ok, %{transactions: transactions, amount: amount}}
   end
 
   def get_report(:total) do
     transactions = Transactions.all()
-    amount = nil
+
+    amount =
+      transactions
+      |> calculate_total_amount
 
     {:ok, %{transactions: transactions, amount: amount}}
+  end
+
+  @doc """
+  Calculates total amount from transactions.
+  It receive a List with transactions and return sum of amounts.
+  """
+  def calculate_total_amount(transactions) do
+    transactions
+    |> Enum.reduce(0, fn transaction, acc -> Map.get(transaction, :amount) + acc end)
   end
 end
