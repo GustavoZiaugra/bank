@@ -9,5 +9,6 @@ defmodule BankWeb.Router do
     pipe_through :api
 
     post("/account/create", Api.AccountController, :create)
+    post("/report/transactions", Api.Report.TransactionController, :index)
   end
 end

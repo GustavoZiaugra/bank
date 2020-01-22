@@ -13,6 +13,7 @@ defmodule Bank.Transactions.Transaction do
     Specifies the expected struct for Bank.Transactions.Transaction
   """
 
+  @derive {Jason.Encoder, only: [:operation_type, :amount, :inserted_at, :receiver_id, :payer_id]}
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "transactions" do

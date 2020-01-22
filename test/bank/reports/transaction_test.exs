@@ -17,7 +17,7 @@ defmodule Bank.Reports.TransactionTest do
 
     test "by_day" do
       {:ok, result} = Transactions.get_report(:by_day)
-      assert result |> Map.get(:amount) == 20000
+      assert result |> Map.get(:amount) == "R$200.00"
       assert result |> Map.get(:transactions) |> Enum.count() == 2
     end
 
@@ -30,7 +30,7 @@ defmodule Bank.Reports.TransactionTest do
 
       {:ok, result} = Transactions.get_report(:by_month)
 
-      assert result |> Map.get(:amount) == 10000
+      assert result |> Map.get(:amount) == "R$100.00"
       assert result |> Map.get(:transactions) |> Enum.count() == 1
     end
 
@@ -42,7 +42,7 @@ defmodule Bank.Reports.TransactionTest do
       |> Repo.update!()
 
       {:ok, result} = Transactions.get_report(:by_year)
-      assert result |> Map.get(:amount) == 10000
+      assert result |> Map.get(:amount) == "R$100.00"
       assert result |> Map.get(:transactions) |> Enum.count() == 1
     end
 
@@ -54,8 +54,14 @@ defmodule Bank.Reports.TransactionTest do
       |> Repo.update!()
 
       {:ok, result} = Transactions.get_report(:total)
-      assert result |> Map.get(:amount) == 20000
+      assert result |> Map.get(:amount) == "R$200.00"
       assert result |> Map.get(:transactions) |> Enum.count() == 2
+    end
+
+    test "invalid type" do
+      {:error, result} = Transactions.get_report(:random)
+
+      assert result == :invalid_report_type
     end
   end
 end

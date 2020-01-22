@@ -18,7 +18,7 @@ defmodule Bank.Reports.Transactions do
       transactions
       |> calculate_total_amount
 
-    {:ok, %{transactions: transactions, amount: amount}}
+    {:ok, %{transactions: format_to_currency(transactions, :transaction), amount: amount}}
   end
 
   def get_report(:by_month) do
@@ -28,7 +28,7 @@ defmodule Bank.Reports.Transactions do
       transactions
       |> calculate_total_amount
 
-    {:ok, %{transactions: transactions, amount: amount}}
+    {:ok, %{transactions: format_to_currency(transactions, :transaction), amount: amount}}
   end
 
   def get_report(:by_year) do
@@ -38,7 +38,7 @@ defmodule Bank.Reports.Transactions do
       transactions
       |> calculate_total_amount
 
-    {:ok, %{transactions: transactions, amount: amount}}
+    {:ok, %{transactions: format_to_currency(transactions, :transaction), amount: amount}}
   end
 
   def get_report(:total) do
@@ -48,7 +48,11 @@ defmodule Bank.Reports.Transactions do
       transactions
       |> calculate_total_amount
 
-    {:ok, %{transactions: transactions, amount: amount}}
+    {:ok, %{transactions: format_to_currency(transactions, :transaction), amount: amount}}
+  end
+
+  def get_report(_) do
+    {:error, :invalid_report_type}
   end
 
   @doc """
@@ -58,5 +62,27 @@ defmodule Bank.Reports.Transactions do
   def calculate_total_amount(transactions) do
     transactions
     |> Enum.reduce(0, fn transaction, acc -> Map.get(transaction, :amount) + acc end)
+    |> format_to_currency(:amount)
+  end
+
+  @doc """
+  Format amount from cents to currency.
+  """
+  def format_to_currency(transactions, :transaction) do
+    transactions
+    |> Enum.map(fn transaction ->
+      amount =
+        Map.get(transaction, :amount)
+        |> Money.new(:BRL)
+        |> Money.to_string()
+
+      Map.put(transaction, :amount, amount)
+    end)
+  end
+
+  def format_to_currency(amount, :amount) do
+    amount
+    |> Money.new(:BRL)
+    |> Money.to_string()
   end
 end
