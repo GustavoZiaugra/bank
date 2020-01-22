@@ -55,3 +55,8 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :bank, :bank_basic_auth,
+  username: "bank",
+  password: "password",
+  realm: "bank"

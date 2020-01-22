@@ -2,7 +2,15 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
   use BankWeb.ConnCase
   alias Bank.Fixtures
 
-  def call_fixtures do
+  @username Application.get_env(:bank, :bank_basic_auth)[:username]
+  @password Application.get_env(:bank, :bank_basic_auth)[:password]
+
+  defp using_basic_auth(conn, username, password) do
+    header_content = "Basic " <> Base.encode64("#{username}:#{password}")
+    conn |> put_req_header("authorization", header_content)
+  end
+
+  defp call_fixtures do
     Fixtures.Transactions.transaction(:withdraw)
     Fixtures.Transactions.transaction(:transfer)
     :ok
@@ -23,6 +31,7 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
       response =
         conn
         |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> using_basic_auth(@username, @password)
         |> post("/api/report/transactions", params)
         |> json_response(200)
 
@@ -44,6 +53,7 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
       response =
         conn
         |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> using_basic_auth(@username, @password)
         |> post("/api/report/transactions", params)
         |> json_response(200)
 
@@ -65,6 +75,7 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
       response =
         conn
         |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> using_basic_auth(@username, @password)
         |> post("/api/report/transactions", params)
         |> json_response(200)
 
@@ -86,6 +97,7 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
       response =
         conn
         |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> using_basic_auth(@username, @password)
         |> post("/api/report/transactions", params)
         |> json_response(200)
 
@@ -109,6 +121,7 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
       response =
         conn
         |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> using_basic_auth(@username, @password)
         |> post("/api/report/transactions", params)
         |> json_response(200)
 
@@ -130,10 +143,30 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
       response =
         conn
         |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> using_basic_auth(@username, @password)
         |> post("/api/report/transactions", params)
         |> json_response(400)
 
       assert response == %{"errors" => %{"detail" => "Bad Request"}}
+    end
+
+    test "without basic_auth", %{
+      conn: conn
+    } do
+      params =
+        %{
+          "report" => %{
+            "type" => "total"
+          }
+        }
+        |> Jason.encode!()
+
+      response =
+        conn
+        |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> post("/api/report/transactions", params)
+
+      assert response.status == 401
     end
   end
 end

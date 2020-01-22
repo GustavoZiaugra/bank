@@ -45,7 +45,8 @@ defmodule Bank.MixProject do
       {:bcrypt_elixir, "~> 1.0"},
       {:rihanna, "~> 1.3"},
       {:timex, "~> 3.5"},
-      {:money, "~> 1.4"}
+      {:money, "~> 1.4"},
+      {:basic_auth, "~> 2.2.2"}
     ]
   end
 

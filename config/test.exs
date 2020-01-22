@@ -18,3 +18,8 @@ config :bank, BankWeb.Endpoint,
 config :logger, level: :warn
 
 config :bcrypt_elixir, log_rounds: 4
+
+config :bank, :bank_basic_auth,
+  username: "bank",
+  password: "password",
+  realm: "bank"
