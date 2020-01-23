@@ -13,7 +13,8 @@ defmodule Bank.Transactions.Transaction do
     Specifies the expected struct for Bank.Transactions.Transaction
   """
 
-  @derive {Jason.Encoder, only: [:operation_type, :amount, :inserted_at, :receiver_id, :payer_id]}
+  @derive {Jason.Encoder,
+           only: [:id, :operation_type, :amount, :inserted_at, :receiver_id, :payer_id]}
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "transactions" do
@@ -76,6 +77,23 @@ defmodule Bank.Transactions.Transaction do
         :authorized ->
           changeset
       end
+    end
+  end
+
+  defp validate_account_by_transaction(
+         %Ecto.Changeset{
+           changes: %{payer_id: payer_id, amount: amount, operation_type: "withdraw"}
+         } = changeset
+       ) do
+    payer = Accounts.filter_by_uuid(payer_id)
+
+    case Accounts.verify_balance(payer, amount) do
+      :not_authorized ->
+        changeset
+        |> add_error(:amount, "this operation cannot be authorized")
+
+      :authorized ->
+        changeset
     end
   end
 

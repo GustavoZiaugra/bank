@@ -129,4 +129,22 @@ defmodule Bank.Transactions do
   def all do
     Repo.all(Transaction)
   end
+
+  def put_payer_id(transaction_params, account) do
+    struct =
+      transaction_params
+      |> Map.put("payer_id", account.id)
+
+    {:ok, struct}
+  end
+
+  def format_to_currency(transaction, :transaction) do
+    amount =
+      transaction
+      |> Map.get(:amount)
+      |> Money.new(:BRL)
+      |> Money.to_string()
+
+    {:ok, Map.put(transaction, :amount, amount)}
+  end
 end

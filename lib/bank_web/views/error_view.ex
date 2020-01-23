@@ -12,6 +12,10 @@ defmodule BankWeb.ErrorView do
   # the template name. For example, "404.json" becomes
   # "Not Found".
 
+  def render("422.json", %{changeset: :something_went_wrong}) do
+    %{errors: %{detail: "Something went wrong"}}
+  end
+
   def render("422.json", %{changeset: changeset}) do
     %{errors: %{detail: format_changeset_errors(changeset)}}
   end

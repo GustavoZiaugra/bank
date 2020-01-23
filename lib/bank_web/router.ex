@@ -25,4 +25,10 @@ defmodule BankWeb.Router do
     pipe_through [:api, :basic_auth]
     post("/report/transactions", TransactionController, :index)
   end
+
+  scope "/api/", BankWeb do
+    pipe_through [:api, :jwt_authenticated]
+
+    post("/transaction/create", Api.TransactionController, :create)
+  end
 end
