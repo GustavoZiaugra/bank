@@ -1,5 +1,6 @@
 defmodule BankWeb.Router do
   use BankWeb, :router
+  alias BankWeb.Guardian
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -9,10 +10,15 @@ defmodule BankWeb.Router do
     plug BasicAuth, use_config: {:bank, :bank_basic_auth}
   end
 
+  pipeline :jwt_authenticated do
+    plug Guardian.AuthPipeline
+  end
+
   scope "/api", BankWeb do
     pipe_through :api
 
-    post("/account/create", Api.AccountController, :create)
+    post("/account/sign_up", Api.AccountController, :sign_up)
+    post("/account/sign_in", Api.AccountController, :sign_in)
   end
 
   scope "/api/", BankWeb.Api.Report do

@@ -31,6 +31,10 @@ config :rihanna,
 config :money,
   default_currency: :BRL
 
+config :bank, Bank.Guardian,
+  issuer: "bank api",
+  secret_key: "d9U/vOkX4YpnqjI8MLKmoLiqbRyGSYbaPT3ezHjILKEgN9cM6bRHfSbJ+MVP7BDn"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

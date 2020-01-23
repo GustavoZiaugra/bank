@@ -8,7 +8,7 @@ defmodule Bank.Accounts.Account do
     Specifies the expected struct for Bank.Accounts.Account
   """
 
-  @derive {Jason.Encoder, only: [:name, :email, :balance]}
+  @derive {Jason.Encoder, only: [:id, :jwt, :name, :email, :balance]}
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "accounts" do

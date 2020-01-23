@@ -1,6 +1,8 @@
 defmodule Bank.Accounts do
   alias Bank.Repo
   alias Bank.Accounts.Account
+  alias Bank.Guardian
+  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
   @moduledoc """
   Holds `Bank.Accounts.Accounts` related functions.
@@ -77,5 +79,39 @@ defmodule Bank.Accounts do
 
     account = Map.put(account, :balance, balance)
     {:ok, account}
+  end
+
+  def token_sign_in(email, password) do
+    case email_password_auth(email, password) do
+      {:ok, account} ->
+        Guardian.encode_and_sign(account)
+
+      _ ->
+        {:error, :unauthorized}
+    end
+  end
+
+  defp email_password_auth(email, password) when is_binary(email) and is_binary(password) do
+    with {:ok, account} <- get_by_email(email),
+         do: verify_password(password, account)
+  end
+
+  defp get_by_email(email) when is_binary(email) do
+    case Repo.get_by(Account, email: email) do
+      nil ->
+        dummy_checkpw()
+        {:error, "Login error."}
+
+      account ->
+        {:ok, account}
+    end
+  end
+
+  defp verify_password(password, %Account{} = account) when is_binary(password) do
+    if checkpw(password, account.encrypted_password) do
+      {:ok, account}
+    else
+      {:error, :invalid_password}
+    end
   end
 end

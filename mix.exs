@@ -46,7 +46,8 @@ defmodule Bank.MixProject do
       {:rihanna, "~> 1.3"},
       {:timex, "~> 3.5"},
       {:money, "~> 1.4"},
-      {:basic_auth, "~> 2.2.2"}
+      {:basic_auth, "~> 2.2.2"},
+      {:guardian, "~> 2.0"}
     ]
   end
 
