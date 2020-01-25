@@ -9,7 +9,7 @@ defmodule Bank.Transactions do
   use Timex
 
   @doc """
-  Creates an transaction.
+  Creates a transaction.
 
   Mandatory transactions properties:
     - operation_type (string: [ withdraw or transfer ]
@@ -41,13 +41,13 @@ defmodule Bank.Transactions do
           transaction.amount
         )
 
-      unless Kernel.is_nil(payer) && Kernel.is_nil(payer_balance) do
+      unless is_nil(payer) && is_nil(payer_balance) do
         payer
         |> Account.change_account(%{balance: payer_balance})
         |> Repo.update()
       end
 
-      unless Kernel.is_nil(receiver) && Kernel.is_nil(receiver_balance) do
+      unless is_nil(receiver) && is_nil(receiver_balance) do
         receiver
         |> Account.change_account(%{balance: receiver_balance})
         |> Repo.update()
@@ -74,7 +74,7 @@ defmodule Bank.Transactions do
       |> run_create(transaction_params)
       |> run_account_balance_update()
       |> run_notify_by_mail()
-      |> Repo.transaction(timeout: 600_000)
+      |> Repo.transaction()
 
     case transaction_result do
       {:ok, %{notify_by_mail: transaction}} ->

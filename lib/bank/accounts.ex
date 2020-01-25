@@ -26,7 +26,7 @@ defmodule Bank.Accounts do
   @doc """
   Updates an account.
 
-  Only update propertie:
+  Only update properties:
     - balance (integer(amount in cents): min 0)
   """
 

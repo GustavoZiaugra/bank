@@ -5,7 +5,7 @@ defmodule Bank.MixProject do
     [
       app: :bank,
       version: "0.1.0",
-      elixir: "~> 1.5",
+      elixir: "~> 1.9.4",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -34,7 +34,6 @@ defmodule Bank.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.4.11"},
-      {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
