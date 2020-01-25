@@ -1,4 +1,3 @@
-# Bank
 
 Bank is a Phoenix application responsible for making transactions between accounts involving withdraw and transfer operations.
 
@@ -6,8 +5,32 @@ Bank is a Phoenix application responsible for making transactions between accoun
 
 ### Using Docker
 
+You need to change this following configuration into config/dev.exs:
+From:
+```
+config :bank, Bank.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "bank_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+```
+
+To:
+```
+config :bank, Bank.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "bank_dev",
+  hostname: "postgres",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+```
+
+Then run:
 ```bash
-docker-compose up
+docker-compose up --build
 ```
 
 ### Without Docker

@@ -2,8 +2,6 @@ version: '3'
 services:
   postgres:
     image: postgres
-    volumes:
-      - "./volumes/postgres:/var/lib/postgresql/data"
     ports:
       - "5432:5432"
     container_name: postgres
@@ -26,3 +24,4 @@ services:
       - PGDATABASE=bank_dev
       - PGPORT=5432
       - PGHOST=postgres
+      - PGDATA=/tmp
