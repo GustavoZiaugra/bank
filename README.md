@@ -1,3 +1,4 @@
+# Bank
 
 Bank is a Phoenix application responsible for making transactions between accounts involving withdraw and transfer operations.
 
@@ -6,6 +7,7 @@ Bank is a Phoenix application responsible for making transactions between accoun
 ### Using Docker
 
 You need to change this following configuration into config/dev.exs:
+
 From:
 ```
 config :bank, Bank.Repo,
@@ -26,6 +28,28 @@ config :bank, Bank.Repo,
   hostname: "postgres",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
+```
+
+Also change into config/test.exs:
+
+From:
+```
+config :bank, Bank.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "bank_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
+```
+
+To:
+```
+config :bank, Bank.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "bank_test",
+  hostname: "postgres",
+  pool: Ecto.Adapters.SQL.Sandbox
 ```
 
 Then run:
@@ -69,15 +93,23 @@ mix phx.server
 
 8. Access via port 4000
 ```
-localhot:4000
+localhost:4000
 ```
 
 ## Running Tests
 Into the repository directory
 
 ### With Docker
+
+After following the steps above to run the application with Docker, run:
+
 ```
-docker exec -it bank_web_1 MIX_ENV=test mix test
+docker exec -it bank_web_1 bash
+```
+
+Then, inside the container run:
+```
+MIX_ENV=test mix test
 ```
 
 ### Without Docker
@@ -105,7 +137,6 @@ POST /api/account/sign_up
           "password" => password
         }
       }
-
 ```
 
 ### Response
@@ -124,9 +155,7 @@ POST /api/account/sign_up
 
 #### 422
 ```
-
 {"errors" => {"detail" => {"email" => ["can't be blank"]}}}
-
 ```
 
 ### Endpoint:
@@ -144,7 +173,6 @@ POST /api/account/sign_in
           "password" => password
         }
       }
-
 ```
 
 ### Response
@@ -188,8 +216,6 @@ type could be this following options:
     "report" => {"type" => type}
   }
 }
-
-
 ```
 
 ### Response
@@ -227,8 +253,6 @@ POST /api/transaction/create
           "receiver_id" => "Random.uuid"
         }
       }
-
-
 ```
 
 ##### Withdraw:
@@ -240,8 +264,6 @@ POST /api/transaction/create
           "amount" => 100000,
         }
       }
-
-
 ```
 
 ### Response
@@ -273,7 +295,6 @@ POST /api/transaction/create
 #### 422
 ```
 "errors" => {"detail" => {"balance" => ["amount cannot be negative"]}}
-
 ```
 
 ## Deploy

@@ -41,7 +41,7 @@ defmodule Bank.MixProject do
       {:jason, "~> 1.1"},
       {:plug_cowboy, "~> 2.0"},
       {:comeonin, "~> 4.0"},
-      {:bcrypt_elixir, "~> 1.0"},
+      {:bcrypt_elixir, "~> 0.12"},
       {:rihanna, "~> 1.3"},
       {:timex, "~> 3.5"},
       {:money, "~> 1.4"},
