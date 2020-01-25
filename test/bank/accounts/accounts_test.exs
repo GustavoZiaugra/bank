@@ -15,6 +15,11 @@ defmodule Bank.Accounts.AccountsTest do
   end
 
   describe "accounts" do
+    @already_exists_attrs %{
+      email: "maria@valdirme.com.br",
+      password: "foobar",
+      name: "Maria"
+    }
     @valid_attrs %{
       name: "Gustavo Ziaugra",
       email: "gustavo.ziaugra@live.com",
@@ -39,6 +44,13 @@ defmodule Bank.Accounts.AccountsTest do
       assert account.email == "gustavo.ziaugra@live.com"
       assert account.balance == 1_000_00
       assert {:ok, _account} = Bcrypt.check_pass(account, "1234567")
+    end
+
+    test "create/1 when a account already exists" do
+      _account = account()
+      assert {:error, changeset} = Accounts.create(@already_exists_attrs)
+      assert changeset.valid? == false
+      assert changeset.errors |> Enum.empty?() == false
     end
 
     test "update/1 with valid data returns a account" do

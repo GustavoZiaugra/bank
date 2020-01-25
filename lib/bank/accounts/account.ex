@@ -2,6 +2,7 @@ defmodule Bank.Accounts.Account do
   use Ecto.Schema
   import Ecto.Changeset
   alias Bank.Accounts.Account
+  alias Bank.Accounts
   alias Comeonin.Bcrypt
 
   @moduledoc """
@@ -40,6 +41,7 @@ defmodule Bank.Accounts.Account do
     |> validate_length(:email, max: 255)
     |> validate_length(:encrypted_password, min: 6, max: 100)
     |> put_default_balance
+    |> validate_if_already_exists
     |> put_encrypted_password
     |> validate_balance()
     |> unique_constraint(:id)
@@ -53,6 +55,19 @@ defmodule Bank.Accounts.Account do
     |> validate_balance()
   end
 
+  defp validate_if_already_exists(%Ecto.Changeset{valid?: false} = changeset), do: changeset
+
+  defp validate_if_already_exists(%Ecto.Changeset{changes: %{email: email}} = changeset) do
+    case Accounts.filter_by_email(email) do
+      nil ->
+        changeset
+
+      _account ->
+        changeset
+        |> add_error(:email, "account already exists")
+    end
+  end
+
   defp put_default_balance(changeset) do
     put_change(changeset, :balance, 1000 * 100)
   end
@@ -62,14 +77,6 @@ defmodule Bank.Accounts.Account do
   defp put_encrypted_password(%Ecto.Changeset{changes: %{password: password}} = changeset) do
     put_change(changeset, :encrypted_password, Bcrypt.hashpwsalt(password))
   end
-
-  # defp check_password(account) do
-  #   if {:ok, _account} = Bcrypt.check_pass(account, account.encrypted_password) do
-  #     :ok
-  #   else
-  #     :invalid_password
-  #   end
-  # end
 
   defp validate_balance(%Ecto.Changeset{valid?: false} = changeset), do: changeset
 

@@ -45,6 +45,14 @@ defmodule Bank.Accounts do
   def filter_by_uuid(uuid), do: Repo.get(Account, uuid)
 
   @doc """
+  Returns a instance of account by email
+  """
+
+  def filter_by_email(nil), do: nil
+
+  def filter_by_email(email), do: Repo.get_by(Account, email: email)
+
+  @doc """
   Verify if balance can handle with this transaction.
   """
 
