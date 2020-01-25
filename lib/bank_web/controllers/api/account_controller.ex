@@ -15,6 +15,7 @@ defmodule BankWeb.Api.AccountController do
         }
       }
   """
+
   def sign_up(conn, %{"account" => account_params}) do
     with {:ok, account} <- Accounts.create(account_params),
          {:ok, account} <- Accounts.format_to_currency(account),
@@ -39,6 +40,13 @@ defmodule BankWeb.Api.AccountController do
         |> put_view(ErrorView)
         |> render("400.json")
     end
+  end
+
+  def sign_up(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(ErrorView)
+    |> render("400.json")
   end
 
   @doc """
@@ -66,5 +74,12 @@ defmodule BankWeb.Api.AccountController do
         |> put_view(ErrorView)
         |> render("401.json")
     end
+  end
+
+  def sign_in(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(ErrorView)
+    |> render("400.json")
   end
 end

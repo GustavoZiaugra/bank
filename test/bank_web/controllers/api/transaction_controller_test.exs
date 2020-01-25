@@ -37,10 +37,10 @@ defmodule BankWeb.Api.TransactionControllerTest do
 
       assert response["amount"] == "R$100.00"
       assert response["operation_type"] == "transfer"
-      assert Map.has_key?(response, "payer_id") == true
-      assert Map.has_key?(response, "id") == true
-      assert Map.has_key?(response, "receiver_id") == true
-      assert Map.has_key?(response, "inserted_at") == true
+      assert Map.has_key?(response, "payer_id")
+      assert Map.has_key?(response, "id")
+      assert Map.has_key?(response, "receiver_id")
+      assert Map.has_key?(response, "inserted_at")
     end
 
     test "create a new transaction(withdraw)", %{
@@ -66,9 +66,9 @@ defmodule BankWeb.Api.TransactionControllerTest do
 
       assert response["amount"] == "R$100.00"
       assert response["operation_type"] == "withdraw"
-      assert Map.has_key?(response, "payer_id") == true
-      assert Map.has_key?(response, "id") == true
-      assert Map.has_key?(response, "inserted_at") == true
+      assert Map.has_key?(response, "payer_id")
+      assert Map.has_key?(response, "id")
+      assert Map.has_key?(response, "inserted_at")
     end
 
     test "when params is invalid", %{conn: conn} do
@@ -95,6 +95,25 @@ defmodule BankWeb.Api.TransactionControllerTest do
       assert response == %{
                "errors" => %{"detail" => %{"balance" => ["amount cannot be negative"]}}
              }
+    end
+
+    test "should return bad request when params are not expected", %{
+      conn: conn
+    } do
+      joe = Fixtures.Accounts.account(:joe)
+
+      params =
+        %{"foo" => "bar"}
+        |> Jason.encode!()
+
+      response =
+        conn
+        |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> using_token_auth(joe)
+        |> post("/api/transaction/create", params)
+        |> json_response(400)
+
+      assert response == %{"errors" => %{"detail" => "Bad Request"}}
     end
   end
 end

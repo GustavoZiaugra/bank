@@ -45,4 +45,11 @@ defmodule BankWeb.Api.TransactionController do
         |> render("400.json")
     end
   end
+
+  def create(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(ErrorView)
+    |> render("400.json")
+  end
 end

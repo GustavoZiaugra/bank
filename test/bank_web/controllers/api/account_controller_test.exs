@@ -25,8 +25,8 @@ defmodule BankWeb.Api.AccountControllerTest do
       assert response["balance"] == "R$1,000.00"
       assert response["name"] == "Gustavo Ziaugra"
       assert response["email"] == "gustavo.ziaugra@uol.com.br"
-      assert Map.has_key?(response, "jwt") == true
-      assert Map.has_key?(response, "id") == true
+      assert Map.has_key?(response, "jwt")
+      assert Map.has_key?(response, "id")
     end
 
     test "should not create a new account with invalid params", %{
@@ -49,6 +49,22 @@ defmodule BankWeb.Api.AccountControllerTest do
 
       assert response ==
                %{"errors" => %{"detail" => %{"email" => ["can't be blank"]}}}
+    end
+
+    test "should return bad request when params are not expected", %{
+      conn: conn
+    } do
+      params =
+        %{"foo" => "bar"}
+        |> Jason.encode!()
+
+      response =
+        conn
+        |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> post("/api/account/sign_up", params)
+        |> json_response(400)
+
+      assert response == %{"errors" => %{"detail" => "Bad Request"}}
     end
   end
 
@@ -73,7 +89,7 @@ defmodule BankWeb.Api.AccountControllerTest do
         |> post("/api/account/sign_in", params)
         |> json_response(200)
 
-      assert Map.has_key?(response, "jwt") == true
+      assert Map.has_key?(response, "jwt")
     end
 
     test "should return unauthorized when credentials are invalid", %{
@@ -97,6 +113,22 @@ defmodule BankWeb.Api.AccountControllerTest do
         |> json_response(401)
 
       assert response == %{"errors" => %{"detail" => "Unauthorized"}}
+    end
+
+    test "should return bad request when params are not expected", %{
+      conn: conn
+    } do
+      params =
+        %{"foo" => "bar"}
+        |> Jason.encode!()
+
+      response =
+        conn
+        |> Plug.Conn.put_req_header("content-type", "application/json")
+        |> post("/api/account/sign_in", params)
+        |> json_response(400)
+
+      assert response == %{"errors" => %{"detail" => "Bad Request"}}
     end
   end
 end

@@ -28,4 +28,11 @@ defmodule BankWeb.Api.Report.TransactionController do
         |> render("400.json")
     end
   end
+
+  def index(conn, _) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(ErrorView)
+    |> render("400.json")
+  end
 end

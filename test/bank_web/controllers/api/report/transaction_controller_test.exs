@@ -169,4 +169,21 @@ defmodule BankWeb.Api.Report.TransactionControllerTest do
       assert response.status == 401
     end
   end
+
+  test "should return bad request when params are not expected", %{
+    conn: conn
+  } do
+    params =
+      %{"foo" => "bar"}
+      |> Jason.encode!()
+
+    response =
+      conn
+      |> Plug.Conn.put_req_header("content-type", "application/json")
+      |> using_basic_auth(@username, @password)
+      |> post("/api/report/transactions", params)
+      |> json_response(400)
+
+    assert response == %{"errors" => %{"detail" => "Bad Request"}}
+  end
 end
